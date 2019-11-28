@@ -4,11 +4,8 @@ import model.*;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import org.javatuples.Pair;
-import processor.MapProcessingUtil;
 import transformation.Transformation;
-import transformation.TransformationP1;
 import transformation.TransformationP2;
-import transformation.TransformationP7;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,10 +43,10 @@ public class MainApp {
         ints.add(graph.insertInterior("i1", v1, v2, v4));
         ints.add(graph.insertInterior("i2", v1, v4, v6));
         ints.add(graph.insertInterior("i3", v2, v6, v7));
-        ints.get(2).setPartitionRequired(true);
         ints.add(graph.insertInterior("i4", v2, v5, v7));
         ints.add(graph.insertInterior("i5", v5, v7, v8));
         ints.add(graph.insertInterior("i6", v2, v3, v8));
+        ints.get(2).setPartitionRequired(true);
         ints.get(5).setPartitionRequired(true);
 
         graph.display();
@@ -60,13 +57,12 @@ public class MainApp {
             e.printStackTrace();
         }
         int i = 0;
-        for(InteriorNode _i : ints) {
+        for (InteriorNode _i : ints) {
             Transformation t2 = new TransformationP2();
             if (t2.isConditionCompleted(graph, _i)) {
                 System.out.println("true ".concat(Integer.toString(i)));
                 t2.transformGraph(graph, _i);
-            }
-            else {
+            } else {
                 System.out.println("false ".concat(Integer.toString(i)));
             }
             i++;
@@ -121,7 +117,7 @@ public class MainApp {
         return new Pair<>(graph, in1);
     }
 
-    private static Pair<ModelGraph, InteriorNode> task15(){
+    private static Pair<ModelGraph, InteriorNode> task15() {
         ModelGraph graph = new ModelGraph("testGraph");
         Vertex v1 = graph.insertVertex("v1", VertexType.SIMPLE_NODE, new Point3d(0.0, 0.0, 0.0));
         Vertex h2 = graph.insertVertex("h2", VertexType.HANGING_NODE, new Point3d(1.0, 0.0, 0.0));

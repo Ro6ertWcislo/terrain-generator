@@ -44,7 +44,7 @@ public class TransformationP2 implements Transformation {
             triangleModel.put(VERTEX_MAP_SIMPLE_VERTEX_2_KEY, v3);
             triangleModel.put(VERTEX_MAP_OPPOSITE_LONGEST_SIDE, v2);
         }
-        v = getHangingVertexBetween(v1, v2, graph);
+        v = getHangingVertexBetween(v3, v2, graph);
         System.out.println(v2.getId().concat(v3.getId()).concat(v.toString()));
         if (v.isPresent()) {
             if (v4 != null) {
@@ -56,7 +56,7 @@ public class TransformationP2 implements Transformation {
             triangleModel.put(VERTEX_MAP_SIMPLE_VERTEX_2_KEY, v3);
             triangleModel.put(VERTEX_MAP_OPPOSITE_LONGEST_SIDE, v1);
         }
-        if(v4 == null) {
+        if (v4 == null) {
             throw new IllegalStateException();
         }
         triangleModel.put(VERTEX_MAP_ON_LONGEST_SIDE, v4);
@@ -64,6 +64,8 @@ public class TransformationP2 implements Transformation {
     }
 
     private static Optional<Vertex> getHangingVertexBetween(Vertex v1, Vertex v2, ModelGraph graph) {
+        if (v1.getEdgeBetween(v2) != null) return Optional.empty();
+
         List<Vertex> between = graph.getVertexesBetween(v1, v2);
 
         return between.stream().filter(e -> e.getVertexType() == VertexType.HANGING_NODE).findAny();
@@ -72,19 +74,18 @@ public class TransformationP2 implements Transformation {
     @Override
     public boolean isConditionCompleted(ModelGraph graph, InteriorNode interiorNode) {
         Triplet<Vertex, Vertex, Vertex> triangle = interiorNode.getTriangleVertexes();
-        if(!interiorNode.isPartitionRequired()) {
+        if (!interiorNode.isPartitionRequired()) {
             System.out.println("partition not required");
             return false;
         }
         Map<String, Vertex> model = null;
         try {
             model = mapTriangleVertexesToModel(graph, triangle);
-        }
-        catch (IllegalStateException e) {
+        } catch (IllegalStateException e) {
             System.out.println("more broken edges");
             return false; // more than one broken edge found in triangle
         }
-        if(model.get(VERTEX_MAP_ON_LONGEST_SIDE).getVertexType() != VertexType.HANGING_NODE) {
+        if (model.get(VERTEX_MAP_ON_LONGEST_SIDE).getVertexType() != VertexType.HANGING_NODE) {
             System.out.println("no hanging node");
             return false;
         }
@@ -112,8 +113,7 @@ public class TransformationP2 implements Transformation {
         Map<String, Vertex> model;
         try {
             model = mapTriangleVertexesToModel(graph, triangle);
-        }
-        catch (IllegalStateException e) {
+        } catch (IllegalStateException e) {
             throw new RuntimeException("Transformation error");
         }
         graph.removeInterior(interiorNode.getId());
