@@ -88,7 +88,7 @@ public class TransformationP2Test {
             graph.insertEdge("e2", v4, v2, true);
             graph.insertEdge("e3", v2, v3, true);
             graph.insertEdge("e4", v3, v1, true);
-            InteriorNode interior = graph.insertInterior("i1", v1, v2, v3);
+            graph.insertInterior("i1", v1, v2, v3);
             return graph;
     }
     private ModelGraph createFullGraphP2(){

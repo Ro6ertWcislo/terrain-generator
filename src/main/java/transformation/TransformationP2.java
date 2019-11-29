@@ -65,13 +65,24 @@ public class TransformationP2 implements Transformation {
 
         return between.stream().filter(e -> e.getVertexType() == VertexType.HANGING_NODE).findAny();
     }
+    private static boolean hasHangingVertexBetween(Vertex v1, Vertex v2){
+        return v1.getEdgeBetween(v2) != null;
+    }
+
+    private static boolean hasHangingVertex(InteriorNode interiorNode){
+        Triplet<Vertex, Vertex, Vertex> triangle = interiorNode.getTriangleVertexes();
+        return hasHangingVertexBetween(triangle.getValue0(),triangle.getValue1()) ||
+         hasHangingVertexBetween(triangle.getValue1(),triangle.getValue2()) ||
+         hasHangingVertexBetween(triangle.getValue2(),triangle.getValue0());
+    }
 
     @Override
     public boolean isConditionCompleted(ModelGraph graph, InteriorNode interiorNode) {
         Triplet<Vertex, Vertex, Vertex> triangle = interiorNode.getTriangleVertexes();
-        if (!interiorNode.isPartitionRequired()) {
+        if (!hasHangingVertex(interiorNode)) {
             return false;
         }
+
         Map<String, Vertex> model = null;
         try {
             model = mapTriangleVertexesToModel(graph, triangle);

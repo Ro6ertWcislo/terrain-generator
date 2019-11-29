@@ -46,13 +46,11 @@ public class MainApp {
         ints.add(graph.insertInterior("i4", v2, v5, v7));
         ints.add(graph.insertInterior("i5", v5, v7, v8));
         ints.add(graph.insertInterior("i6", v2, v3, v8));
-        ints.get(2).setPartitionRequired(true);
-        ints.get(5).setPartitionRequired(true);
 
         graph.display();
 
         try {
-            Thread.sleep(3000);
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -60,10 +58,7 @@ public class MainApp {
         for (InteriorNode _i : ints) {
             Transformation t2 = new TransformationP2();
             if (t2.isConditionCompleted(graph, _i)) {
-                System.out.println("true ".concat(Integer.toString(i)));
                 t2.transformGraph(graph, _i);
-            } else {
-                System.out.println("false ".concat(Integer.toString(i)));
             }
             i++;
         }
