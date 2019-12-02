@@ -36,7 +36,6 @@ public class TransformationP2 implements Transformation {
                 throw new IllegalStateException();
             }
             v4 = v.get();
-
             triangleModel.put(VERTEX_MAP_SIMPLE_VERTEX_1_KEY, v1);
             triangleModel.put(VERTEX_MAP_SIMPLE_VERTEX_2_KEY, v3);
             triangleModel.put(VERTEX_MAP_OPPOSITE_LONGEST_SIDE, v2);

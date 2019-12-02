@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -15,19 +16,25 @@ public class TransformationP2Test {
     private Transformation transformation = new TransformationP2();
 
     @Test
-    public void  conditionNotCompletedWhenNoHangingNode(){
+    public void conditionNotCompletedWhenNoHangingNode(){
         ModelGraph graph  = createSingleTriangle();
         InteriorNode interior = graph.getInterior("i1").get();
         assertFalse(transformation.isConditionCompleted(graph,interior));
     }
 
     @Test
-    public void  conditionCompletedWhenHangingNodePresent(){
+    public void conditionCompletedWhenHangingNodePresent(){
         ModelGraph graph  = createSingeTriangleWithHangingNode();
         InteriorNode interior = graph.getInterior("i1").get();
         assertTrue(transformation.isConditionCompleted(graph,interior));
     }
 
+    @Test
+    public void conditionNotCompletedWithIncorrectEdgeLengths(){
+        ModelGraph graph = createSingeTriangleWithHangingNodeOnShortEdge();
+        InteriorNode interior = graph.getInterior("i1").get();
+        assertFalse(transformation.isConditionCompleted(graph, interior));
+    }
 
     @Test
     public void conditionsNotMetForSeveralTrianglesInGraph(){
@@ -45,12 +52,65 @@ public class TransformationP2Test {
             assertFalse(transformation.isConditionCompleted(graph,interior));
         }
     }
+
     @Test
-    public void  simpleTriangleTransformation(){
+    public void simpleTriangleTransformation(){
         ModelGraph graph  = createSingeTriangleWithHangingNode();
         InteriorNode interior = graph.getInterior("i1").get();
         transformation.transformGraph(graph,interior);
         assertTrue(graph.getEdgeBetweenNodes(graph.getVertex("v4").get(),graph.getVertex("v3").get()).isPresent());
+    }
+
+    @Test
+    public void newEdgeLengthTest(){
+        ModelGraph graph  = createSingeTriangleWithHangingNode();
+        InteriorNode interior = graph.getInterior("i1").get();
+        transformation.transformGraph(graph,interior);
+        GraphEdge e = graph.getEdgeBetweenNodes(graph.getVertex("v4").get(),graph.getVertex("v3").get()).get();
+        assertEquals(e.getL(), 50);
+    }
+
+    @Test
+    public void newEdgeBoundaryTest(){
+        ModelGraph graph  = createSingeTriangleWithHangingNode();
+        InteriorNode interior = graph.getInterior("i1").get();
+        transformation.transformGraph(graph, interior);
+        GraphEdge e = graph.getEdgeBetweenNodes(graph.getVertex("v4").get(),graph.getVertex("v3").get()).get();
+        assertFalse(e.getB());
+    }
+
+    @Test
+    public void newTrianglesInteriorAddedTest(){
+        ModelGraph graph  = createSingeTriangleWithHangingNode();
+        InteriorNode interior = graph.getInterior("i1").get();
+        transformation.transformGraph(graph, interior);
+        List<InteriorNode> i1 = new ArrayList<>(graph.getInteriors());
+        assertEquals(2, i1.size());
+    }
+
+    @Test
+    public void newTrianglesRefineTest(){
+        ModelGraph graph  = createSingeTriangleWithHangingNode();
+        InteriorNode interior = graph.getInterior("i1").get();
+        transformation.transformGraph(graph, interior);
+        List<InteriorNode> i1 = new ArrayList<>(graph.getInteriors());
+        assertFalse(i1.get(0).isPartitionRequired());
+        assertFalse(i1.get(1).isPartitionRequired());
+    }
+
+    @Test
+    public void transformationKeepsEdgesBoundary() {
+        ModelGraph graph  = createSingeTriangleWithHangingNodeAndChangingBoundary();
+        InteriorNode interior = graph.getInterior("i1").get();
+        transformation.transformGraph(graph, interior);
+        Vertex v1 = graph.getVertex("v1").get();
+        Vertex v2 = graph.getVertex("v2").get();
+        Vertex v3 = graph.getVertex("v3").get();
+        Vertex v4 = graph.getVertex("v4").get();
+        assertTrue(graph.getEdge(v1, v4).get().getB());
+        assertFalse(graph.getEdge(v2, v4).get().getB());
+        assertTrue(graph.getEdge(v2, v3).get().getB());
+        assertFalse(graph.getEdge(v1, v3).get().getB());
     }
 
     @Test
@@ -79,18 +139,47 @@ public class TransformationP2Test {
     }
 
     private ModelGraph createSingeTriangleWithHangingNode(){
-            ModelGraph graph = new ModelGraph("testGraph2");
-            Vertex v1 = graph.insertVertex("v1", VertexType.SIMPLE_NODE, new Point3d(0.0, 0.0, 0.0));
-            Vertex v2 = graph.insertVertex("v2", VertexType.SIMPLE_NODE, new Point3d(100.0, 0.0, 0.0));
-            Vertex v3 = graph.insertVertex("v3", VertexType.SIMPLE_NODE, new Point3d(50.0, 50.0, 0.0));
-            Vertex v4 = graph.insertVertex("v4", VertexType.HANGING_NODE, new Point3d(50.0, 0.0, 0.0));
-            graph.insertEdge("e1", v1, v4, true);
-            graph.insertEdge("e2", v4, v2, true);
-            graph.insertEdge("e3", v2, v3, true);
-            graph.insertEdge("e4", v3, v1, true);
-            graph.insertInterior("i1", v1, v2, v3);
-            return graph;
+        ModelGraph graph = new ModelGraph("testGraph2");
+        Vertex v1 = graph.insertVertex("v1", VertexType.SIMPLE_NODE, new Point3d(0.0, 0.0, 0.0));
+        Vertex v2 = graph.insertVertex("v2", VertexType.SIMPLE_NODE, new Point3d(100.0, 0.0, 0.0));
+        Vertex v3 = graph.insertVertex("v3", VertexType.SIMPLE_NODE, new Point3d(50.0, 50.0, 0.0));
+        Vertex v4 = graph.insertVertex("v4", VertexType.HANGING_NODE, new Point3d(50.0, 0.0, 0.0));
+        graph.insertEdge("e1", v1, v4, true);
+        graph.insertEdge("e2", v4, v2, true);
+        graph.insertEdge("e3", v2, v3, true);
+        graph.insertEdge("e4", v3, v1, true);
+        graph.insertInterior("i1", v1, v2, v3);
+        return graph;
     }
+
+    private ModelGraph createSingeTriangleWithHangingNodeAndChangingBoundary(){
+        ModelGraph graph = new ModelGraph("testGraph2");
+        Vertex v1 = graph.insertVertex("v1", VertexType.SIMPLE_NODE, new Point3d(0.0, 0.0, 0.0));
+        Vertex v2 = graph.insertVertex("v2", VertexType.SIMPLE_NODE, new Point3d(100.0, 0.0, 0.0));
+        Vertex v3 = graph.insertVertex("v3", VertexType.SIMPLE_NODE, new Point3d(50.0, 50.0, 0.0));
+        Vertex v4 = graph.insertVertex("v4", VertexType.HANGING_NODE, new Point3d(50.0, 0.0, 0.0));
+        graph.insertEdge("e1", v1, v4, true);
+        graph.insertEdge("e2", v4, v2, false);
+        graph.insertEdge("e3", v2, v3, true);
+        graph.insertEdge("e4", v3, v1, false);
+        graph.insertInterior("i1", v1, v2, v3);
+        return graph;
+    }
+
+    private ModelGraph createSingeTriangleWithHangingNodeOnShortEdge(){
+        ModelGraph graph = new ModelGraph("testGraph2");
+        Vertex v1 = graph.insertVertex("v1", VertexType.SIMPLE_NODE, new Point3d(0.0, 0.0, 0.0));
+        Vertex v2 = graph.insertVertex("v2", VertexType.SIMPLE_NODE, new Point3d(100.0, 0.0, 0.0));
+        Vertex v3 = graph.insertVertex("v3", VertexType.SIMPLE_NODE, new Point3d(50.0, 50.0, 0.0));
+        Vertex v4 = graph.insertVertex("v4", VertexType.HANGING_NODE, new Point3d(25.0, 25.0, 0.0));
+        graph.insertEdge("e1", v1, v4, true);
+        graph.insertEdge("e2", v4, v3, true);
+        graph.insertEdge("e3", v1, v2, true);
+        graph.insertEdge("e4", v2, v3, true);
+        graph.insertInterior("i1", v1, v2, v3);
+        return graph;
+    }
+
     private ModelGraph createFullGraphP2(){
         // interior i3 and i6 need some transformations
 
