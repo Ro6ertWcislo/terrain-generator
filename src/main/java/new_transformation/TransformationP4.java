@@ -5,7 +5,7 @@ import org.apache.log4j.BasicConfigurator;
 import org.javatuples.Triplet;
 import transformation.Transformation;
 
-import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 public class TransformationP4 implements Transformation {
@@ -51,15 +51,11 @@ public class TransformationP4 implements Transformation {
                     graph.getEdgeBetweenNodes(hanging_3, vertices.getValue2()).get().getL();
 
 
-        System.out.println(e1_sum);
-        System.out.println(e2_sum);
-        System.out.println(e3_sum);
-        System.out.println(e5);
         return (e1_sum >= e5 || e2_sum >= e5 || e3_sum >= e5);
     }
 
 
-    private double get_edge_sum(ModelGraph graph, InteriorNode interiorNode, Vertex vertex){
+    private double getEdgeSum(ModelGraph graph, InteriorNode interiorNode, Vertex vertex){
         double sum = 0;
         Triplet<Vertex, Vertex, Vertex> triangle = interiorNode.getTriangle();
         Vertex[] nodes = new Vertex[] {triangle.getValue0(), triangle.getValue1(), triangle.getValue2() };
@@ -70,17 +66,15 @@ public class TransformationP4 implements Transformation {
                     sum += edge.getL();
             }
         }
-        System.out.println(sum);
         return sum;
     }
 
-    private Vertex get_splittable_node(ModelGraph graph, InteriorNode interiorNode){
+    private Vertex getSplittableNode(ModelGraph graph, InteriorNode interiorNode){
         List<Vertex> candidates = interiorNode.getAssociatedNodes();
-        System.out.println("size of associated nodes: " + candidates.size());
         Vertex best_fit = null;
         double best_fit_sum = 0.0;
         for(Vertex candidate: candidates){
-            double edge = get_edge_sum(graph, interiorNode, candidate);
+            double edge = getEdgeSum(graph, interiorNode, candidate);
             if(edge > best_fit_sum){
                 best_fit = candidate;
                 best_fit_sum = edge;
@@ -89,9 +83,9 @@ public class TransformationP4 implements Transformation {
         return best_fit;
     }
 
-    private Vertex get_not_splittable_node(ModelGraph graph, InteriorNode interiorNode){
+    private Vertex getNotSplittableNode(ModelGraph graph, InteriorNode interiorNode){
         List<Vertex> candidates = interiorNode.getAssociatedNodes();
-        Vertex best_fit = get_splittable_node(graph, interiorNode);
+        Vertex best_fit = getSplittableNode(graph, interiorNode);
         for(Vertex vertex: candidates){
             if(vertex != best_fit)
                 return vertex;
@@ -111,30 +105,24 @@ public class TransformationP4 implements Transformation {
         if(this.isConditionCompleted(graph, interiorNode)){
 
 
-            Vertex v2 = get_splittable_node(graph, interiorNode);
-            Vertex v4 = get_not_splittable_node(graph, interiorNode);
+            Vertex v2 = getSplittableNode(graph, interiorNode);
+            Vertex v4 = getNotSplittableNode(graph, interiorNode);
 
             Vertex v3 = graph.getVertexBetween(v2, v4).orElse(null);
-            List<Vertex> vertex_candidates = Arrays.asList(triangleToList(interiorNode.getTriangle()));
+            Vertex[] vertex_candidates = triangleToList(interiorNode.getTriangle());
             Vertex v1 = null;
             Vertex v5 = null;
             for(Vertex vertex: vertex_candidates){
                 if(vertex != v3 && graph.getEdgeBetweenNodes(v2, vertex).isPresent())
                     v1 = vertex;
-                System.out.println(vertex);
                 if(vertex != v3 && v4.hasEdgeBetween(vertex))
                     v5 = vertex;
             }
 
-            System.out.println(v1);
-            System.out.println(v2);
-            System.out.println(v3);
-            System.out.println(v4);
-            System.out.println(v5);
             graph.removeInterior(interiorNode.getId());
-            graph.insertEdge("e_new1", v5, v2, false);
-            InteriorNode i1 = graph.insertInterior("i_new1", v1, v2, v5);
-            InteriorNode i2 = graph.insertInterior("i_new2", v3, v2, v5, v4);
+            graph.insertEdge(interiorNode.getId() + "e1", v5, v2, false);
+            InteriorNode i1 = graph.insertInterior(interiorNode.getId() + "i1", v1, v2, v5);
+            InteriorNode i2 = graph.insertInterior(interiorNode.getId() + "i2", v3, v2, v5, v4);
 
             //change type of node 2
             i1.setPartitionRequired(false);
@@ -211,18 +199,18 @@ public class TransformationP4 implements Transformation {
         graph.display();
 
         try {
-            Thread.sleep(500);
+            Thread.sleep(5000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        for(InteriorNode node: graph.getInteriors()){
 
+        List<InteriorNode> interiors = new LinkedList<>(graph.getInteriors());
+
+        interiors.forEach(node -> {
             if(t4.isConditionCompleted(graph, node))
                 System.out.println("Available for split " + node.getId());
-                t4.transformGraph(graph, node);
-
-        }
-
+            t4.transformGraph(graph, node);
+        });
     }
 }
