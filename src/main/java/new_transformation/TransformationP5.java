@@ -6,6 +6,7 @@ import org.javatuples.Triplet;
 import transformation.Transformation;
 
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 public class TransformationP5 implements Transformation {
@@ -116,7 +117,7 @@ public class TransformationP5 implements Transformation {
             Vertex v4 = get_not_splittable_node(graph, interiorNode);
 
             Vertex v3 = graph.getVertexBetween(v2, v4).orElse(null);
-            List<Vertex> vertex_candidates = Arrays.asList(triangleToList(interiorNode.getTriangle()));
+            Vertex[] vertex_candidates = triangleToList(interiorNode.getTriangle());
             Vertex v1 = null;
             Vertex v5 = null;
             for(Vertex vertex: vertex_candidates){
@@ -135,11 +136,11 @@ public class TransformationP5 implements Transformation {
             graph.removeInterior(interiorNode.getId());
             graph.removeEdge(v1, v5);
             Vertex new_v = graph.insertVertex("new_1", VertexType.SIMPLE_NODE, new Point3d((v1.getXCoordinate() + v5.getXCoordinate()) / 2, (v1.getYCoordinate() + v5.getYCoordinate()) / 2, 0.0));
-            graph.insertEdge("new_1", v1, new_v, false);
-            graph.insertEdge("new_2", v5, new_v, false);
-            graph.insertEdge("new_3", v3, new_v, false);
-            InteriorNode i1 = graph.insertInterior("i_new1", v1, v3, new_v, v2);
-            InteriorNode i2 = graph.insertInterior("i_new2", v3, new_v, v5, v4);
+            graph.insertEdge(interiorNode.getId() + "e1", v1, new_v, false);
+            graph.insertEdge(interiorNode.getId() + "e2", v5, new_v, false);
+            graph.insertEdge(interiorNode.getId() + "e3", v3, new_v, false);
+            InteriorNode i1 = graph.insertInterior(interiorNode.getId() + "i1", v1, v3, new_v, v2);
+            InteriorNode i2 = graph.insertInterior(interiorNode.getId() + "i2", v3, new_v, v5, v4);
 
             //change type of node 2
             i1.setPartitionRequired(true);
@@ -211,23 +212,23 @@ public class TransformationP5 implements Transformation {
         BasicConfigurator.configure();
 
         ModelGraph graph = graph();
-        Transformation t4 = new TransformationP5();
+        Transformation t5 = new TransformationP5();
 
         graph.display();
 
         try {
-            Thread.sleep(500);
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        for(InteriorNode node: graph.getInteriors()){
+        List<InteriorNode> interiors = new LinkedList<>(graph.getInteriors());
 
-            if(t4.isConditionCompleted(graph, node))
+        interiors.forEach(node -> {
+            if(t5.isConditionCompleted(graph, node))
                 System.out.println("Available for split " + node.getId());
-                t4.transformGraph(graph, node);
-
-        }
+                t5.transformGraph(graph, node);
+        });
 
     }
 }
