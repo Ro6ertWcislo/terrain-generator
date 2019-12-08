@@ -60,9 +60,13 @@ public class Task1Test {
         for (InteriorNode i : interiorNodes) {
             if (!new HashSet<>(graph.getInteriors()).contains(i)) break;
             for (Transformation transformation : transformations) {
-                if (transformation.isConditionCompleted(graph, i)) {
-                    graph = transformation.transformGraph(graph, i);
-                    anyTransactionFired = true;
+                try {
+                    if (transformation.isConditionCompleted(graph, i)) {
+                        graph = transformation.transformGraph(graph, i);
+                        anyTransactionFired = true;
+                    }
+                } catch(Throwable t){
+                    System.err.println("Error running transformation " + transformation.toString() + ": " + t.getMessage());
                 }
             }
         }
