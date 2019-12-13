@@ -125,6 +125,8 @@ public class TransformationP2 implements Transformation {
         GraphEdge centralEdge = graph.insertEdge(centralEdgeId, vertexOppositeLongest, vertexOnLongest);
         centralEdge.setB(false);
 
+        vertexOnLongest.setVertexType(VertexType.SIMPLE_NODE);
+
         Vertex v1 = model.get(VERTEX_MAP_SIMPLE_VERTEX_1_KEY);
         Vertex v2 = model.get(VERTEX_MAP_SIMPLE_VERTEX_2_KEY);
         String interior1Id = v1.getId().concat(vertexOnLongest.getId()).concat(vertexOppositeLongest.getId());
