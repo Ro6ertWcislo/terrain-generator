@@ -3,10 +3,8 @@ package model;
 import org.graphstream.graph.implementations.AbstractGraph;
 import org.javatuples.Triplet;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class InteriorNode extends GraphNode {
 
@@ -46,7 +44,31 @@ public class InteriorNode extends GraphNode {
     }
 
     public List<Vertex> getAssociatedNodes() {
-        return Collections.unmodifiableList(associatedNodes);
+        final ModelGraph modelGraph = (ModelGraph) graph;
+        final List<Vertex> nodes = new LinkedList<>();
+        final Vertex v0 = triangle.getValue0();
+        final Vertex v1 = triangle.getValue1();
+        final Vertex v2 = triangle.getValue2();
+        getAssociatedNode(modelGraph, v0, v1).ifPresent(nodes::add);
+        getAssociatedNode(modelGraph, v1, v2).ifPresent(nodes::add);
+        getAssociatedNode(modelGraph, v2, v0).ifPresent(nodes::add);
+        return nodes;
+    }
+
+    private static Optional<Vertex> getAssociatedNode(ModelGraph modelGraph, Vertex v0, Vertex v1) {
+        if (v0.hasEdgeBetween(v1)) return Optional.empty();
+        return modelGraph
+                .getVertexesBetween(v0, v1)
+                .stream()
+                .min((vertex1, vertex2) -> {
+                    final double l1 = modelGraph.getEdgeBetweenNodes(v0, vertex1).get().getL()
+                            + modelGraph.getEdgeBetweenNodes(v1, vertex1).get().getL();
+                    final double l2 = modelGraph.getEdgeBetweenNodes(v0, vertex2).get().getL()
+                            + modelGraph.getEdgeBetweenNodes(v1, vertex2).get().getL();
+
+                    return Math.abs(l1 - l2) < 1e-6 ? 0 : (l1 - l2 > 0 ? 1 : -1);
+                }
+        );
     }
 
     private static Point3d getInteriorPosition(Vertex v1, Vertex v2, Vertex v3) {
