@@ -41,18 +41,17 @@ public class TransformationP3 implements Transformation {
                 .orElseThrow(() -> new RuntimeException("Unknown edge id"));
         GraphEdge edge3 = graph.getEdgeBetweenNodes(v1, v3)
                 .orElseThrow(() -> new RuntimeException("Unknown edge id"));
-        if(edge1.getL() > edge2.getL()) {
-            if (edge1.getL() > edge3.getL()) {
-                return edge1;
-            } else {
-                return edge3;
-            }
-        } else if(edge2.getL() > edge3.getL()) {
+
+
+        if (((edge1.getL() > edge2.getL())  || ((edge1.getL() == edge2.getL()) && !edge2.getB()))
+                && ((edge1.getL() > edge3.getL()) || ((edge1.getL() == edge3.getL()) && !edge3.getB()))) {
+            return edge1;
+        } else if (((edge2.getL() > edge1.getL())  || ((edge2.getL() == edge1.getL()) && !edge1.getB()))
+                && ((edge2.getL() > edge3.getL()) || ((edge2.getL() == edge3.getL()) && !edge3.getB()))) {
             return edge2;
         } else {
             return edge3;
         }
-
     }
 
     private static int getSimpleVertexCount(Triplet<Vertex, Vertex, Vertex> triangle) {
