@@ -245,7 +245,7 @@ public class TransformationP4 implements Transformation {
         Vertex v3 = graph.insertVertex("v3", VertexType.SIMPLE_NODE, new Point3d(100.0, 100.0, 0.0));
         Vertex v4 = graph.insertVertex("v4", VertexType.SIMPLE_NODE, new Point3d(100.0, 0.0, 0.0));
 
-        GraphEdge v2_v3 = graph.insertEdge("v2v3", v2, v3,  true);
+        GraphEdge v2_v3 = graph.insertEdge("v2v3", v2, v3,  false);
         GraphEdge v1_v2 = graph.insertEdge("v1v2", v1, v2,  true);
         GraphEdge v2_v4 = graph.insertEdge("v2v4", v2, v4,  true);
         GraphEdge v3_v4 = graph.insertEdge("v3v4", v3, v4,  true);
@@ -278,15 +278,17 @@ public class TransformationP4 implements Transformation {
             e.printStackTrace();
         }
 
-        List<InteriorNode> interiors = new LinkedList<>(graph.getInteriors());
-
         for(int i = 0; i < 4; i++){
             transformations.forEach(t -> {
+                List<InteriorNode> interiors = new LinkedList<>(graph.getInteriors());
                 interiors.forEach(node -> {
                     if(t.isConditionCompleted(graph, node)) {
-                        System.out.println("Available for split " + node.getId());
+                        System.out.println("Available for split " + node.getId() + " " + t.toString());
                         t.transformGraph(graph, node);
                     }
+                });
+                graph.getInteriors().forEach(node -> {
+                    node.setPartitionRequired(true);
                 });
             });
         }
@@ -341,8 +343,8 @@ public class TransformationP4 implements Transformation {
     }
 
     public static void main(String[] args) {
-//        all_transformation_test();
-        transformation_t4_test();
+        all_transformation_test();
+//        transformation_t4_test();
 
     }
 }
