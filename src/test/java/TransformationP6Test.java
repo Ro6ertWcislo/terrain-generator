@@ -69,7 +69,7 @@ public class TransformationP6Test extends AbstractTransformationTest {
         Pair<ModelGraph, Map<InteriorNode, Boolean>> graphPair = createEnvelopeGraph();
         ModelGraph graph = graphPair.getValue0();
 
-        assertEquals(8, graph.getInteriors().size());
+        assertEquals(7, graph.getInteriors().size());
         for (Map.Entry<InteriorNode, Boolean> entry : graphPair.getValue1().entrySet()) {
             InteriorNode iNode = entry.getKey();
 
@@ -77,7 +77,7 @@ public class TransformationP6Test extends AbstractTransformationTest {
                 transformation.transformGraph(graph, iNode);
             }
         }
-        assertEquals(9, graph.getInteriors().size());
+        assertEquals(8, graph.getInteriors().size());
     }
 
     @Test
@@ -85,7 +85,7 @@ public class TransformationP6Test extends AbstractTransformationTest {
         Pair<ModelGraph, Map<InteriorNode, Boolean>> graphPair = createEnvelopeGraph();
         ModelGraph graph = graphPair.getValue0();
 
-        assertEquals(41, graph.getEdges().size());
+        assertEquals(37, graph.getEdges().size());
         for (Map.Entry<InteriorNode, Boolean> entry : graphPair.getValue1().entrySet()) {
             InteriorNode iNode = entry.getKey();
 
@@ -93,7 +93,7 @@ public class TransformationP6Test extends AbstractTransformationTest {
                 transformation.transformGraph(graph, iNode);
             }
         }
-        assertEquals(45, graph.getEdges().size());
+        assertEquals(41, graph.getEdges().size());
     }
 
     @Test
@@ -163,25 +163,23 @@ public class TransformationP6Test extends AbstractTransformationTest {
         graph.insertEdge("e6", v2, v3);
         graph.insertEdge("e7", v3, v6);
         graph.insertEdge("e8", v3, v9);
-        graph.insertEdge("e9", v4, v5);
-        graph.insertEdge("e10", v4, v7);
-        graph.insertEdge("e11", v5, v7);
-        graph.insertEdge("e12", v5, v8);
-        graph.insertEdge("e13", v6, v8);
-        graph.insertEdge("e14", v6, v9);
-        graph.insertEdge("e15", v7, v8);
-        graph.insertEdge("e16", v8, v9);
+        graph.insertEdge("e9", v4, v7);
+        graph.insertEdge("e10", v5, v7);
+        graph.insertEdge("e11", v5, v8);
+        graph.insertEdge("e12", v6, v8);
+        graph.insertEdge("e13", v6, v9);
+        graph.insertEdge("e14", v7, v8);
+        graph.insertEdge("e15", v8, v9);
 
         // i-nodes
         Map<InteriorNode, Boolean> nodesWithFlag = new HashMap<>();
         nodesWithFlag.put(graph.insertInterior("i0", v0, v1, v2), false);
         nodesWithFlag.put(graph.insertInterior("i1", v0, v2, v3), false);
-        nodesWithFlag.put(graph.insertInterior("i2", v1, v4, v5), false);
+        nodesWithFlag.put(graph.insertInterior("i2", v1, v5, v7), false);
         nodesWithFlag.put(graph.insertInterior("i3", v1, v3, v8), true);  // <-- correct :D
         nodesWithFlag.put(graph.insertInterior("i4", v3, v6, v9), false);
-        nodesWithFlag.put(graph.insertInterior("i5", v4, v5, v7), false);
-        nodesWithFlag.put(graph.insertInterior("i6", v5, v7, v8), false);
-        nodesWithFlag.put(graph.insertInterior("i7", v6, v8, v9), false);
+        nodesWithFlag.put(graph.insertInterior("i5", v5, v7, v8), false);
+        nodesWithFlag.put(graph.insertInterior("i6", v6, v8, v9), false);
 
         return Pair.with(graph, nodesWithFlag);
     }
