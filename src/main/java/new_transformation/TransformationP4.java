@@ -3,8 +3,9 @@ package new_transformation;
 import model.*;
 import org.apache.log4j.BasicConfigurator;
 import org.javatuples.Triplet;
-import transformation.Transformation;
+import transformation.*;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -236,7 +237,62 @@ public class TransformationP4 implements Transformation {
         return graph;
     }
 
-    public static void main(String[] args) {
+
+    private static ModelGraph graph2() {
+        ModelGraph graph = new ModelGraph("testGraph");
+        Vertex v1 = graph.insertVertex("v1", VertexType.SIMPLE_NODE, new Point3d(0.0, 100.0, 0.0));
+        Vertex v2 = graph.insertVertex("v2", VertexType.SIMPLE_NODE, new Point3d(0.0, 0.0, 0.0));
+        Vertex v3 = graph.insertVertex("v3", VertexType.SIMPLE_NODE, new Point3d(100.0, 100.0, 0.0));
+        Vertex v4 = graph.insertVertex("v4", VertexType.SIMPLE_NODE, new Point3d(100.0, 0.0, 0.0));
+
+        GraphEdge v2_v3 = graph.insertEdge("v2v3", v2, v3,  true);
+        GraphEdge v1_v2 = graph.insertEdge("v1v2", v1, v2,  true);
+        GraphEdge v2_v4 = graph.insertEdge("v2v4", v2, v4,  true);
+        GraphEdge v3_v4 = graph.insertEdge("v3v4", v3, v4,  true);
+        GraphEdge v1_v3 = graph.insertEdge("v1v3", v1, v3,  true);
+
+        InteriorNode in1 = graph.insertInterior("i1", v1, v2, v3);
+        InteriorNode in2 = graph.insertInterior("i2", v2, v3, v4);
+        in1.setPartitionRequired(true);
+        in2.setPartitionRequired(true);
+        return graph;
+    }
+
+    public static void all_transformation_test(){
+        BasicConfigurator.configure();
+
+        ModelGraph graph = graph2();
+        List<Transformation> transformations = Arrays.asList(
+                new TransformationP1(),
+                new TransformationP2(),
+                new TransformationP3(),
+                new TransformationP4(),
+                new TransformationP5(),
+                new TransformationP6()
+        );
+        graph.display();
+
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        List<InteriorNode> interiors = new LinkedList<>(graph.getInteriors());
+
+        for(int i = 0; i < 4; i++){
+            transformations.forEach(t -> {
+                interiors.forEach(node -> {
+                    if(t.isConditionCompleted(graph, node)) {
+                        System.out.println("Available for split " + node.getId());
+                        t.transformGraph(graph, node);
+                    }
+                });
+            });
+        }
+    }
+
+    public static void transformation_t4_test() {
         BasicConfigurator.configure();
 
         ModelGraph graph = graph();
@@ -282,5 +338,11 @@ public class TransformationP4 implements Transformation {
                 System.out.println("Available for split " + node.getId());
             t4.transformGraph(graph2, node);
         });
+    }
+
+    public static void main(String[] args) {
+//        all_transformation_test();
+        transformation_t4_test();
+
     }
 }
