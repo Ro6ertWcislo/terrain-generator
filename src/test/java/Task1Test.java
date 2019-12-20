@@ -64,6 +64,7 @@ public class Task1Test {
                     if (transformation.isConditionCompleted(graph, i)) {
                         graph = transformation.transformGraph(graph, i);
                         anyTransactionFired = true;
+                        sleepFor3Seconds();
                     }
                 } catch(Throwable t){
                     System.err.println("Error running transformation " + transformation.toString() + ": " + t.getMessage());

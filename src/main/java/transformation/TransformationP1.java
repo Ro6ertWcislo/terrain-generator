@@ -36,12 +36,13 @@ public class TransformationP1 implements Transformation {
 
         GraphEdge longestEdge = graph.getEdgeBetweenNodes(vertex1, vertex2)
                 .orElseThrow(() -> new RuntimeException("Edge doesn't exist in the graph."));
+        boolean edgeWasBoundary = longestEdge.getB();
 
         graph.removeInterior(interiorNode.getId());
         graph.deleteEdge(longestEdge.getId());
 
         Vertex insertedVertex = graph.insertVertex(interiorNode.getId(),
-                VertexType.SIMPLE_NODE,
+                edgeWasBoundary?VertexType.SIMPLE_NODE:VertexType.HANGING_NODE,
                 Point3d.middlePoint(vertex1.getCoordinates(), vertex2.getCoordinates()));
 
         insertEdge(graph, vertex1, insertedVertex, longestEdge.getB());
