@@ -15,7 +15,7 @@ public class TransformationP2 implements Transformation {
     private static final String VERTEX_MAP_OPPOSITE_LONGEST_SIDE = "simpleVertex3";
     private static final String VERTEX_MAP_ON_LONGEST_SIDE = "simpleVertex4";
 
-    private static Map<String, Vertex> mapTriangleVertexesToModel(ModelGraph graph, Triplet<Vertex, Vertex, Vertex> triangle) {
+    private static Map<String, Vertex> mapTriangleVertexesToModel(ModelGraph graph, InteriorNode interior, Triplet<Vertex, Vertex, Vertex> triangle) {
 
         Map<String, Vertex> triangleModel = new HashMap<>();
 
@@ -23,14 +23,14 @@ public class TransformationP2 implements Transformation {
         Vertex v2 = triangle.getValue1();
         Vertex v3 = triangle.getValue2();
         Vertex v4 = null;
-        Optional<Vertex> v = getHangingVertexBetween(v1, v2, graph);
+        Optional<Vertex> v = getHangingVertexBetween(v1, v2, graph, interior);
         if (v.isPresent()) {
             v4 = v.get();
             triangleModel.put(VERTEX_MAP_SIMPLE_VERTEX_1_KEY, v1);
             triangleModel.put(VERTEX_MAP_SIMPLE_VERTEX_2_KEY, v2);
             triangleModel.put(VERTEX_MAP_OPPOSITE_LONGEST_SIDE, v3);
         }
-        v = getHangingVertexBetween(v1, v3, graph);
+        v = getHangingVertexBetween(v1, v3, graph, interior);
         if (v.isPresent()) {
             if (v4 != null) {
                 throw new IllegalStateException();
@@ -40,7 +40,7 @@ public class TransformationP2 implements Transformation {
             triangleModel.put(VERTEX_MAP_SIMPLE_VERTEX_2_KEY, v3);
             triangleModel.put(VERTEX_MAP_OPPOSITE_LONGEST_SIDE, v2);
         }
-        v = getHangingVertexBetween(v3, v2, graph);
+        v = getHangingVertexBetween(v3, v2, graph, interior);
         if (v.isPresent()) {
             if (v4 != null) {
                 throw new IllegalStateException();
@@ -57,12 +57,13 @@ public class TransformationP2 implements Transformation {
         return triangleModel;
     }
 
-    private static Optional<Vertex> getHangingVertexBetween(Vertex v1, Vertex v2, ModelGraph graph) {
+    private static Optional<Vertex> getHangingVertexBetween(Vertex v1, Vertex v2, ModelGraph graph, InteriorNode interior) {
         if (v1.getEdgeBetween(v2) != null) return Optional.empty();
 
         List<Vertex> between = graph.getVertexesBetween(v1, v2);
+        // TODO: fix it
 
-        return between.stream().filter(e -> e.getVertexType() == VertexType.HANGING_NODE).findAny();
+        return between.stream().filter(x -> interior.getAssociatedNodes().contains(x)).filter(e -> e.getVertexType() == VertexType.HANGING_NODE).findAny();
     }
     private static boolean hasHangingVertexBetween(Vertex v1, Vertex v2){
         return v1.getEdgeBetween(v2) != null;
@@ -84,7 +85,7 @@ public class TransformationP2 implements Transformation {
 
         Map<String, Vertex> model = null;
         try {
-            model = mapTriangleVertexesToModel(graph, triangle);
+            model = mapTriangleVertexesToModel(graph, interiorNode, triangle);
         } catch (IllegalStateException e) {
             return false; // more than one broken edge found in triangle
         }
@@ -113,7 +114,7 @@ public class TransformationP2 implements Transformation {
         Triplet<Vertex, Vertex, Vertex> triangle = interiorNode.getTriangleVertexes();
         Map<String, Vertex> model;
         try {
-            model = mapTriangleVertexesToModel(graph, triangle);
+            model = mapTriangleVertexesToModel(graph, interiorNode, triangle);
         } catch (IllegalStateException e) {
             throw new RuntimeException("Transformation error");
         }
