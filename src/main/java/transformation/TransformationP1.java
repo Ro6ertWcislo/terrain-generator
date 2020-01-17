@@ -36,12 +36,13 @@ public class TransformationP1 implements Transformation {
 
         GraphEdge longestEdge = graph.getEdgeBetweenNodes(vertex1, vertex2)
                 .orElseThrow(() -> new RuntimeException("Edge doesn't exist in the graph."));
+        boolean edgeWasBoundary = longestEdge.getB();
 
         graph.removeInterior(interiorNode.getId());
         graph.deleteEdge(longestEdge.getId());
 
         Vertex insertedVertex = graph.insertVertex(interiorNode.getId(),
-                VertexType.SIMPLE_NODE,
+                edgeWasBoundary?VertexType.SIMPLE_NODE:VertexType.HANGING_NODE,
                 Point3d.middlePoint(vertex1.getCoordinates(), vertex2.getCoordinates()));
 
         insertEdge(graph, vertex1, insertedVertex, longestEdge.getB());
@@ -84,15 +85,19 @@ public class TransformationP1 implements Transformation {
             edge3 = modelGraph.getEdgeBetweenNodes(v3, v1).orElseThrow(() -> new RuntimeException("Unknown edge id"));
         }
 
+        boolean assignedWithBorder = false;
+
         if (edge1.getL() >= edge2.getL() && edge1.getL() >= edge3.getL()){
+            assignedWithBorder = edge1.getB();
             triangleModel.put(longestEdgeVertex1, v1);
             triangleModel.put(longestEdgeVertex2, v2);
             triangleModel.put(oppositeVertex, v3);
-        } else if (edge2.getL() >= edge1.getL() && edge2.getL() >= edge3.getL()) {
+        } if (!assignedWithBorder && edge2.getL() >= edge1.getL() && edge2.getL() >= edge3.getL()) {
+            assignedWithBorder = edge2.getB();
             triangleModel.put(longestEdgeVertex1, v2);
             triangleModel.put(longestEdgeVertex2, v3);
             triangleModel.put(oppositeVertex, v1);
-        } else if (edge3.getL() >= edge1.getL() && edge3.getL() >= edge2.getL()) {
+        } if (!assignedWithBorder && edge3.getL() >= edge1.getL() && edge3.getL() >= edge2.getL()) {
             triangleModel.put(longestEdgeVertex1, v1);
             triangleModel.put(longestEdgeVertex2, v3);
             triangleModel.put(oppositeVertex, v2);
