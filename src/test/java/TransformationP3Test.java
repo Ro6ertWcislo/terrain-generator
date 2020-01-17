@@ -55,31 +55,30 @@ public class TransformationP3Test extends AbstractTransformationTest {
         // EDGES:
         // from v1
         graph.insertEdge("e1", v1, v2, true);
-        graph.insertEdge("e2", v1, v7, true);
+        graph.insertEdge("e2", v1, v7, false);
         graph.insertEdge("e3", v1, v6, true);
         // from v2
         graph.insertEdge("e4", v2, v3, true);
-        graph.insertEdge("e5", v2, v5, true);
-        graph.insertEdge("e6", v2, v4, true);
-        graph.insertEdge("e6_1", v2, v7, true); // FIXME - this edge should not be added. It is only to prevent null pointer exception when calling getEdgeBetweenNodes for v2 and v7
-        graph.insertEdge("e6_2", v2, v8, true); // FIXME - this edge should not be added. It is only to prevent null pointer exception when calling getEdgeBetweenNodes for v2 and v8
+        graph.insertEdge("e5", v2, v5, false);
+
+        graph.insertEdge("e6", v2, v4, false);
         // from v3
         graph.insertEdge("e7", v3, v8, true);
         // from v4
-        graph.insertEdge("e8", v4, v5, true);
-        graph.insertEdge("e9", v4, v7, true);
+        graph.insertEdge("e8", v4, v5, false);
+        graph.insertEdge("e9", v4, v7, false);
         // from v5
-        graph.insertEdge("e10", v5, v8, true);
-        graph.insertEdge("e11", v5, v7, true);
+        graph.insertEdge("e10", v5, v8, false);
+        graph.insertEdge("e11", v5, v7, false);
         // from v6
         graph.insertEdge("e12", v6, v7, true);
         // from v7
         graph.insertEdge("e13", v7, v8, true);
         // edges between hanging nodes
-        graph.insertEdge("e14", v2, h1, true);
-        graph.insertEdge("e15", h1, v7, true);
-        graph.insertEdge("e16", h2, v2, true);
-        graph.insertEdge("e17", h2, v8, true);
+        graph.insertEdge("e14", v2, h1, false);
+        graph.insertEdge("e15", h1, v7, false);
+        graph.insertEdge("e16", h2, v2, false);
+        graph.insertEdge("e17", h2, v8, false);
 
 
 
