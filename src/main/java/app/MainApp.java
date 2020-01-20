@@ -4,8 +4,11 @@ import model.*;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import org.javatuples.Pair;
-import transformation.Transformation;
-import transformation.TransformationP1;
+import transformation.*;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class MainApp {
 
@@ -115,24 +118,123 @@ public class MainApp {
         return new Pair<>(graph, in1);
     }
 
-    public static void main(String[] args) {
+    private static ModelGraph fooGraph() {
+        ModelGraph graph = new ModelGraph("graph");
+        Vertex v01 = graph.insertVertex("v01", VertexType.SIMPLE_NODE, new Point3d(0.0, 0.0, 0.0));
+        Vertex v02 = graph.insertVertex("v02", VertexType.SIMPLE_NODE, new Point3d(100.0, 0.0, 10.0));
+        Vertex v03 = graph.insertVertex("v03", VertexType.SIMPLE_NODE, new Point3d(200.0, 0.0, 20.0));
+        Vertex v04 = graph.insertVertex("v04", VertexType.SIMPLE_NODE, new Point3d(300.0, 0.0, 40.0));
+        Vertex v05 = graph.insertVertex("v05", VertexType.SIMPLE_NODE, new Point3d(50.0, 50.0, 5.0));
+        Vertex v06 = graph.insertVertex("v06", VertexType.SIMPLE_NODE, new Point3d(100.0, 50.0, 10.0));
+        Vertex v07 = graph.insertVertex("v07", VertexType.SIMPLE_NODE, new Point3d(150.0, 50.0, 15.0));
+        Vertex v08 = graph.insertVertex("v08", VertexType.SIMPLE_NODE, new Point3d(250.0, 50.0, 45.0));
+        Vertex v09 = graph.insertVertex("v09", VertexType.SIMPLE_NODE, new Point3d(0.0, 100.0, 0.0));
+        Vertex v10 = graph.insertVertex("v10", VertexType.SIMPLE_NODE, new Point3d(100.0, 100.0, 10.0));
+        Vertex v11 = graph.insertVertex("v11", VertexType.SIMPLE_NODE, new Point3d(200.0, 100.0, 20.0));
+        Vertex v12 = graph.insertVertex("v12", VertexType.SIMPLE_NODE, new Point3d(300.0, 100.0, 50.0));
+        Vertex v13 = graph.insertVertex("v13", VertexType.SIMPLE_NODE, new Point3d(50.0, 150.0, 5.0));
+        Vertex v14 = graph.insertVertex("v14", VertexType.SIMPLE_NODE, new Point3d(150.0, 150.0, 15.0));
+        Vertex v15 = graph.insertVertex("v15", VertexType.SIMPLE_NODE, new Point3d(0.0, 200.0, 0.0));
+        Vertex v16 = graph.insertVertex("v16", VertexType.SIMPLE_NODE, new Point3d(200.0, 200.0, 20.0));
+        Vertex v17 = graph.insertVertex("v17", VertexType.SIMPLE_NODE, new Point3d(300.0, 200.0, 60.0));
+
+        GraphEdge e01 = graph.insertEdge("e01", v01, v02);
+        GraphEdge e02 = graph.insertEdge("e02", v02, v03);
+        GraphEdge e03 = graph.insertEdge("e03", v03, v04);
+        GraphEdge e04 = graph.insertEdge("e04", v01, v09);
+        GraphEdge e05 = graph.insertEdge("e05", v01, v05);
+        GraphEdge e06 = graph.insertEdge("e06", v05, v09);
+        GraphEdge e07 = graph.insertEdge("e07", v02, v05);
+        GraphEdge e08 = graph.insertEdge("e08", v06, v10);
+        GraphEdge e09 = graph.insertEdge("e09", v02, v06);
+        GraphEdge e10 = graph.insertEdge("e10", v06, v07);
+        GraphEdge e11 = graph.insertEdge("e11", v10, v07);
+        GraphEdge e12 = graph.insertEdge("e12", v03, v07);
+        GraphEdge e13 = graph.insertEdge("e13", v03, v11);
+        GraphEdge e14 = graph.insertEdge("e14", v03, v08);
+        GraphEdge e15 = graph.insertEdge("e15", v08, v12);
+        GraphEdge e16 = graph.insertEdge("e16", v04, v08);
+        GraphEdge e17 = graph.insertEdge("e17", v04, v12);
+        GraphEdge e18 = graph.insertEdge("e18", v09, v10);
+        GraphEdge e19 = graph.insertEdge("e19", v10, v11);
+        GraphEdge e20 = graph.insertEdge("e20", v11, v12);
+        GraphEdge e21 = graph.insertEdge("e21", v09, v15);
+        GraphEdge e22 = graph.insertEdge("e22", v09, v13);
+        GraphEdge e23 = graph.insertEdge("e23", v15, v13);
+        GraphEdge e24 = graph.insertEdge("e24", v13, v10);
+        GraphEdge e25 = graph.insertEdge("e25", v10, v14);
+        GraphEdge e26 = graph.insertEdge("e26", v14, v16);
+        GraphEdge e27 = graph.insertEdge("e27", v14, v11);
+        GraphEdge e28 = graph.insertEdge("e28", v11, v16);
+        GraphEdge e29 = graph.insertEdge("e29", v16, v12);
+        GraphEdge e30 = graph.insertEdge("e30", v12, v17);
+        GraphEdge e31 = graph.insertEdge("e31", v15, v16);
+        GraphEdge e32 = graph.insertEdge("e32", v16, v17);
+        GraphEdge e33 = graph.insertEdge("e33", v02, v07);
+
+        graph.insertInterior("i01", v01, v05, v09);
+        graph.insertInterior("i02", v01, v02, v05);
+        graph.insertInterior("i03", v09, v02, v10);
+        graph.insertInterior("i04", v06, v07, v10);
+        graph.insertInterior("i05", v02, v07, v06);
+        graph.insertInterior("i06", v02, v03, v07);
+        graph.insertInterior("i07", v10, v03, v11);
+        graph.insertInterior("i08", v03, v12, v11);
+        graph.insertInterior("i09", v03, v04, v08);
+        graph.insertInterior("i10", v08, v04, v12);
+        graph.insertInterior("i11", v15, v09, v13);
+        graph.insertInterior("i12", v09, v10, v13);
+        graph.insertInterior("i13", v15, v10, v16);
+        graph.insertInterior("i14", v10, v11, v14);
+        graph.insertInterior("i15", v14, v11, v16);
+        graph.insertInterior("i16", v11, v12, v16);
+        graph.insertInterior("i17", v16, v12, v17);
+        return null;
+    }
+
+    private static void foo() {
         BasicConfigurator.configure();
+        List<Transformation> transformations = Arrays.asList(new TransformationP1(), new TransformationP2(), new TransformationP3(),
+                                                             new TransformationP4(), new TransformationP5(), new TransformationP6());
+        Transformation T7 = new TransformationP7();
+        ModelGraph graph = fooGraph();
+        List<InteriorNode> ints = new ArrayList<>(graph.getInteriors());
 
-        Pair<ModelGraph, InteriorNode> task = task1();
-        ModelGraph graph = task.getValue0();
-        InteriorNode interiorNode = task.getValue1();
+        final int iters = 10;
+        for(int i = 0; i < iters; i++) {
+            for(InteriorNode interior : ints) {
 
-        Transformation t1 = new TransformationP1();
-        log.info(String.format("Condition state for transformation P1: %b", t1.isConditionCompleted(graph, interiorNode)));
+            }
+            for(Transformation tr : transformations) {
+                for(InteriorNode interior : ints) {
+                    if(tr.isConditionCompleted(graph, interior)) {
+                        tr.transformGraph(graph, interior);
+                    }
+                }
 
-        graph.display();
-
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            }
         }
-        t1.transformGraph(graph, interiorNode);
+    }
+
+    public static void main(String[] args) {
+        foo();
+//        BasicConfigurator.configure();
+//
+//        Pair<ModelGraph, InteriorNode> task = task1();
+//        ModelGraph graph = task.getValue0();
+//        InteriorNode interiorNode = task.getValue1();
+//
+//        Transformation t1 = new TransformationP1();
+//        log.info(String.format("Condition state for transformation P1: %b", t1.isConditionCompleted(graph, interiorNode)));
+//
+//        graph.display();
+//
+//        try {
+//            Thread.sleep(3000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//        t1.transformGraph(graph, interiorNode);
 
 //        TerrainMap map = new TerrainMap();
 //        map.fillMapWithExampleData();
