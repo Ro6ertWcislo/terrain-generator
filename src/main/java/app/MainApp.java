@@ -125,24 +125,24 @@ public class MainApp {
         Vertex v02 = graph.insertVertex("v02", VertexType.SIMPLE_NODE, new Point3d(100.0, 0.0, 10.0));
         Vertex v03 = graph.insertVertex("v03", VertexType.SIMPLE_NODE, new Point3d(200.0, 0.0, 20.0));
         Vertex v04 = graph.insertVertex("v04", VertexType.SIMPLE_NODE, new Point3d(300.0, 0.0, 40.0));
-        Vertex v05 = graph.insertVertex("v05", VertexType.SIMPLE_NODE, new Point3d(50.0, 50.0, 5.0));
-        Vertex v06 = graph.insertVertex("v06", VertexType.SIMPLE_NODE, new Point3d(100.0, 50.0, 10.0));
-        Vertex v07 = graph.insertVertex("v07", VertexType.SIMPLE_NODE, new Point3d(150.0, 50.0, 15.0));
-        Vertex v08 = graph.insertVertex("v08", VertexType.SIMPLE_NODE, new Point3d(250.0, 50.0, 45.0));
+        Vertex v05 = graph.insertVertex("v05", VertexType.HANGING_NODE, new Point3d(50.0, 50.0, 5.0));
+        Vertex v06 = graph.insertVertex("v06", VertexType.HANGING_NODE, new Point3d(100.0, 50.0, 10.0));
+        Vertex v07 = graph.insertVertex("v07", VertexType.HANGING_NODE, new Point3d(150.0, 50.0, 15.0));
+        Vertex v08 = graph.insertVertex("v08", VertexType.HANGING_NODE, new Point3d(250.0, 50.0, 45.0));
         Vertex v09 = graph.insertVertex("v09", VertexType.SIMPLE_NODE, new Point3d(0.0, 100.0, 0.0));
         Vertex v10 = graph.insertVertex("v10", VertexType.SIMPLE_NODE, new Point3d(100.0, 100.0, 10.0));
         Vertex v11 = graph.insertVertex("v11", VertexType.SIMPLE_NODE, new Point3d(200.0, 100.0, 20.0));
         Vertex v12 = graph.insertVertex("v12", VertexType.SIMPLE_NODE, new Point3d(300.0, 100.0, 50.0));
-        Vertex v13 = graph.insertVertex("v13", VertexType.SIMPLE_NODE, new Point3d(50.0, 150.0, 5.0));
-        Vertex v14 = graph.insertVertex("v14", VertexType.SIMPLE_NODE, new Point3d(150.0, 150.0, 15.0));
+        Vertex v13 = graph.insertVertex("v13", VertexType.HANGING_NODE, new Point3d(50.0, 150.0, 5.0));
+        Vertex v14 = graph.insertVertex("v14", VertexType.HANGING_NODE, new Point3d(150.0, 150.0, 15.0));
         Vertex v15 = graph.insertVertex("v15", VertexType.SIMPLE_NODE, new Point3d(0.0, 200.0, 0.0));
         Vertex v16 = graph.insertVertex("v16", VertexType.SIMPLE_NODE, new Point3d(200.0, 200.0, 20.0));
         Vertex v17 = graph.insertVertex("v17", VertexType.SIMPLE_NODE, new Point3d(300.0, 200.0, 60.0));
 
-        GraphEdge e01 = graph.insertEdge("v01v02", v01, v02);
-        GraphEdge e02 = graph.insertEdge("v02v03", v02, v03);
-        GraphEdge e03 = graph.insertEdge("v03v04", v03, v04);
-        GraphEdge e04 = graph.insertEdge("v01v09", v01, v09);
+        GraphEdge e01 = graph.insertEdge("v01v02", v01, v02, true);
+        GraphEdge e02 = graph.insertEdge("v02v03", v02, v03, true);
+        GraphEdge e03 = graph.insertEdge("v03v04", v03, v04, true);
+        GraphEdge e04 = graph.insertEdge("v01v09", v01, v09, true);
         GraphEdge e05 = graph.insertEdge("v01v05", v01, v05);
         GraphEdge e06 = graph.insertEdge("v05v09", v05, v09);
         GraphEdge e07 = graph.insertEdge("v02v05", v02, v05);
@@ -155,11 +155,11 @@ public class MainApp {
         GraphEdge e14 = graph.insertEdge("v03v08", v03, v08);
         GraphEdge e15 = graph.insertEdge("v08v12", v08, v12);
         GraphEdge e16 = graph.insertEdge("v04v08", v04, v08);
-        GraphEdge e17 = graph.insertEdge("v04v12", v04, v12);
+        GraphEdge e17 = graph.insertEdge("v04v12", v04, v12, true);
         GraphEdge e18 = graph.insertEdge("v09v10", v09, v10);
         GraphEdge e19 = graph.insertEdge("v10v11", v10, v11);
         GraphEdge e20 = graph.insertEdge("v11v12", v11, v12);
-        GraphEdge e21 = graph.insertEdge("v09v15", v09, v15);
+        GraphEdge e21 = graph.insertEdge("v09v15", v09, v15, true);
         GraphEdge e22 = graph.insertEdge("v09v13", v09, v13);
         GraphEdge e23 = graph.insertEdge("v15v13", v15, v13);
         GraphEdge e24 = graph.insertEdge("v13v10", v13, v10);
@@ -168,9 +168,9 @@ public class MainApp {
         GraphEdge e27 = graph.insertEdge("v14v11", v14, v11);
         GraphEdge e28 = graph.insertEdge("v11v16", v11, v16);
         GraphEdge e29 = graph.insertEdge("v16v12", v16, v12);
-        GraphEdge e30 = graph.insertEdge("v12v17", v12, v17);
-        GraphEdge e31 = graph.insertEdge("v15v16", v15, v16);
-        GraphEdge e32 = graph.insertEdge("v16v17", v16, v17);
+        GraphEdge e30 = graph.insertEdge("v12v17", v12, v17, true);
+        GraphEdge e31 = graph.insertEdge("v15v16", v15, v16, true);
+        GraphEdge e32 = graph.insertEdge("v16v17", v16, v17, true);
         GraphEdge e33 = graph.insertEdge("v02v07", v02, v07);
 
         graph.insertInterior("i01", v01, v05, v09);
@@ -206,6 +206,12 @@ public class MainApp {
 
         Transformation T7 = new TransformationP7();
         ModelGraph graph = fooGraph();
+        graph.display();
+//        try {
+//            Thread.sleep(60000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
         List<InteriorNode> ints = new ArrayList<>();
 
         Transformation t1 = new TransformationP1();

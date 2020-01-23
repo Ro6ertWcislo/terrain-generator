@@ -15,19 +15,24 @@ public class TransformationP5 implements Transformation {
             return false;
 
         Triplet<Vertex, Vertex, Vertex> triangle2 = getOrderedTriage2(triangle, graph);
+        if (triangle2==null) return false;
 
         return areAllVertexType(triangle2) &&
                 isTransformationConditionFulfilled(graph, triangle2);
     }
 
     private Triplet<Vertex, Vertex, Vertex> getOrderedTriage2(Triplet<Vertex, Vertex, Vertex> triangle, ModelGraph graph) {
-        GraphEdge E1 = graph.getEdgeBetweenNodes(triangle.getValue0(), triangle.getValue2()).orElseThrow(() -> new RuntimeException("Edge not found"));
-        GraphEdge E2 = graph.getEdgeBetweenNodes(triangle.getValue1(), triangle.getValue2()).orElseThrow(() -> new RuntimeException("Edge not found"));
+        try {
+            GraphEdge E1 = graph.getEdgeBetweenNodes(triangle.getValue0(), triangle.getValue2()).orElseThrow(() -> new RuntimeException("Edge not found"));
+            GraphEdge E2 = graph.getEdgeBetweenNodes(triangle.getValue1(), triangle.getValue2()).orElseThrow(() -> new RuntimeException("Edge not found"));
+            return E1.getL() > E2.getL()
+                    ? triangle
+                    : new Triplet<>(triangle.getValue1(), triangle.getValue0(), triangle.getValue2());
+        }catch (Exception ex){
+            return null;
+        }
 
 
-        return E1.getL() > E2.getL()
-                ? triangle
-                : new Triplet<>(triangle.getValue1(), triangle.getValue0(), triangle.getValue2());
     }
 
     private boolean isTransformationConditionFulfilled(ModelGraph graph, Triplet<Vertex, Vertex, Vertex> triangle) {
