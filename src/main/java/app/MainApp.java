@@ -142,7 +142,7 @@ public class MainApp {
                 new TransformationP3(), new TransformationP4(), new TransformationP5(), new TransformationP6(),
                 new TransformationP7());
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 7; i++) {
             for (Transformation t : transformations) {
                 List<InteriorNode> interiorNodes = new ArrayList<>(startingGraph.getInteriors());
                 for (InteriorNode in : interiorNodes) {
@@ -151,7 +151,7 @@ public class MainApp {
                         conditionCompleted = t.isConditionCompleted(startingGraph, in);
                     } catch (RuntimeException re) {
                         System.out.println("Error during transformation: " + t.getClass().getSimpleName()
-                                + ". Setting condition completed as FALSE");
+                                + ". Setting condition completion to FALSE");
                         conditionCompleted = false;
                     }
                     if (conditionCompleted) {
