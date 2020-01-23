@@ -10,7 +10,6 @@ import java.util.*;
 
 public class MainApp {
 
-    private static final double EPSILON = 5.0;
     private static Logger log = Logger.getLogger(MainApp.class.getName());
 
     private static Pair<ModelGraph, Map<InteriorNode, Boolean>> createEnvelopeGraph() {
@@ -65,10 +64,10 @@ public class MainApp {
         Vertex v00 = graph.insertVertex("00", VertexType.SIMPLE_NODE, new Point3d(0., 200., 0.));
         Vertex v01 = graph.insertVertex("01", VertexType.SIMPLE_NODE, new Point3d(200., 200., 20.));
         Vertex v02 = graph.insertVertex("02", VertexType.SIMPLE_NODE, new Point3d(300., 200., 60.));
-        Vertex v10 = graph.insertVertex("10", VertexType.HANGING_NODE, new Point3d(60., 150., 5.));
+        Vertex v10 = graph.insertVertex("10", VertexType.HANGING_NODE, new Point3d(50., 150., 5.));
         Vertex v11 = graph.insertVertex("11", VertexType.HANGING_NODE, new Point3d(150., 150., 15.));
         Vertex v20 = graph.insertVertex("20", VertexType.SIMPLE_NODE, new Point3d(0., 100., 0.));
-        Vertex v21 = graph.insertVertex("21", VertexType.SIMPLE_NODE, new Point3d(100., 100., 0.));
+        Vertex v21 = graph.insertVertex("21", VertexType.SIMPLE_NODE, new Point3d(100., 100., 10.));
         Vertex v22 = graph.insertVertex("22", VertexType.HANGING_NODE, new Point3d(200., 100., 20.));
         Vertex v23 = graph.insertVertex("23", VertexType.SIMPLE_NODE, new Point3d(300., 100., 50.));
         Vertex v30 = graph.insertVertex("30", VertexType.HANGING_NODE, new Point3d(50., 50., 5.));
@@ -135,41 +134,47 @@ public class MainApp {
 
     private static void manyProds() {
         ModelGraph startingGraph = prepareTestGraph();
-//        startingGraph.display();
-//
-//        try {
-//            Thread.sleep(3000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
+        startingGraph.display();
+
+        sleep();
 
         List<Transformation> transformations = Arrays.asList(new TransformationP1(), new TransformationP2(),
-                new TransformationP3(), new TransformationP4(), new TransformationP5(), new TransformationP6());
+                new TransformationP3(), new TransformationP4(), new TransformationP5(), new TransformationP6(),
+                new TransformationP7());
 
-        for (int i = 0; i < 1; i++) {
-            for (InteriorNode in : startingGraph.getInteriors()) {
-                if (getDifference(in) > EPSILON) {
-                    in.setPartitionRequired(true);
-                }
-            }
-
+        for (int i = 0; i < 3; i++) {
             for (Transformation t : transformations) {
-                for (InteriorNode in : startingGraph.getInteriors()) {
-                    if (t.isConditionCompleted(startingGraph, in)) {
+                List<InteriorNode> interiorNodes = new ArrayList<>(startingGraph.getInteriors());
+                for (InteriorNode in : interiorNodes) {
+                    boolean conditionCompleted;
+                    try {
+                        conditionCompleted = t.isConditionCompleted(startingGraph, in);
+                    } catch (RuntimeException re) {
+                        System.out.println("Error during transformation: " + t.getClass().getSimpleName()
+                                + ". Setting condition completed as FALSE");
+                        conditionCompleted = false;
+                    }
+                    if (conditionCompleted) {
                         startingGraph = t.transformGraph(startingGraph, in);
+                        String tName = t.getClass().getSimpleName();
+
+                        if (!tName.equals(TransformationP7.class.getSimpleName())) {
+                            System.out.println("Applying: " + tName + " on IN: " + in.getId());
+                        }
                     }
                 }
             }
             startingGraph.display();
+            sleep();
         }
     }
 
-    private static double getDifference(InteriorNode in) {
-        List<Double> zList = Arrays.asList(in.getTriangle().getValue0().getZCoordinate(),
-                in.getTriangle().getValue1().getZCoordinate(),
-                in.getTriangle().getValue2().getZCoordinate());
-
-        return Collections.max(zList) - Collections.min(zList);
+    private static void sleep() {
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {
