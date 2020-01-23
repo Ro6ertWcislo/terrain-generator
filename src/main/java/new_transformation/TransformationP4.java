@@ -10,6 +10,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+import static new_transformation.TransformationR.graphR;
+
 public class TransformationP4 implements Transformation {
 
     @Override
@@ -261,8 +263,9 @@ public class TransformationP4 implements Transformation {
     public static void all_transformation_test(){
         BasicConfigurator.configure();
 
-        ModelGraph graph = graph2();
+        ModelGraph graph = graphR();
         List<Transformation> transformations = Arrays.asList(
+                new TransformationR(),
                 new TransformationP1(),
                 new TransformationP2(),
                 new TransformationP3(),
@@ -278,13 +281,18 @@ public class TransformationP4 implements Transformation {
             e.printStackTrace();
         }
 
-        for(int i = 0; i < 4; i++){
+        for(int i = 0; i < 20; i++){
             transformations.forEach(t -> {
                 List<InteriorNode> interiors = new LinkedList<>(graph.getInteriors());
                 interiors.forEach(node -> {
                     if(t.isConditionCompleted(graph, node)) {
                         System.out.println("Available for split " + node.getId() + " " + t.toString());
                         t.transformGraph(graph, node);
+                        try {
+                            Thread.sleep(5000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
                 });
                 graph.getInteriors().forEach(node -> {
