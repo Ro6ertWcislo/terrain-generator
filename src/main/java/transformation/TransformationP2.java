@@ -60,13 +60,19 @@ public class TransformationP2 implements Transformation {
     private static Optional<Vertex> getHangingVertexBetween(Vertex v1, Vertex v2, ModelGraph graph, InteriorNode interior) {
         if (v1.getEdgeBetween(v2) != null) return Optional.empty();
 
+        double eps = 1e-5;
         List<Vertex> between = graph.getVertexesBetween(v1, v2);
-        // TODO: fix it
-
-        return between.stream().filter(x -> interior.getAssociatedNodes().contains(x)).filter(e -> e.getVertexType() == VertexType.HANGING_NODE).findAny();
+        double xMid = (v1.getXCoordinate() + v2.getXCoordinate()) /2;
+        double yMid = (v1.getYCoordinate() + v2.getYCoordinate()) /2;
+        for (Vertex v : between){
+            if (v.getXCoordinate() >(xMid-eps) && v.getXCoordinate() < (xMid+eps) && v.getYCoordinate() >(yMid-eps) && v.getYCoordinate() < (yMid+eps)){
+                if(v.getVertexType() ==VertexType.HANGING_NODE ) return Optional.of(v);
+            }
+        }
+        return Optional.empty();
     }
     private static boolean hasHangingVertexBetween(Vertex v1, Vertex v2){
-        return v1.getEdgeBetween(v2) != null;
+        return v1.getEdgeBetween(v2) == null;
     }
 
     private static boolean hasHangingVertex(InteriorNode interiorNode){

@@ -8,6 +8,7 @@ import transformation.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 public class MainApp {
@@ -194,30 +195,76 @@ public class MainApp {
 
     private static void foo() {
         BasicConfigurator.configure();
-        List<Transformation> transformations = Arrays.asList(new TransformationP1(), new TransformationP2(), new TransformationP3(),
-                new TransformationP4(), new TransformationP5(), new TransformationP6(), new TransformationP7());
+        List<Transformation> transformations = Arrays.asList(
+                new TransformationP1(),
+                new TransformationP2(),
+//                new TransformationP3(),
+//                new TransformationP4(),
+//                new TransformationP5(),
+//                new TransformationP6(),
+                new TransformationP7());
 
         Transformation T7 = new TransformationP7();
         ModelGraph graph = fooGraph();
         List<InteriorNode> ints = new ArrayList<>();
 
-        final int iters = 7;
+        Transformation t1 = new TransformationP1();
+        Transformation t2 = new TransformationP2();
+        Transformation t3 = new TransformationP1();
+        Transformation t4 = new TransformationP4();
+        Transformation t5 = new TransformationP5();
+        Transformation t6 = new TransformationP6();
+        Transformation t7 = new TransformationP7();
+//        log.info(String.format("Condition state for transformation P1: %b", t1.isConditionCompleted(graph, interiorNode)));
+
         graph.display();
 
-        for (int i = 0; i < iters; i++) {
-
-            for (Transformation tr : transformations) {
-                List<InteriorNode> interiors = new ArrayList<>(graph.getInteriors());
-                for (int k = 0; k < interiors.size(); k++) {
-                    if (tr.isConditionCompleted(graph, interiors.get(k))) {
-                        graph = tr.transformGraph(graph, interiors.get(k));
+        for(int i = 0; i < 5; i++){
+            Collection<InteriorNode> interiorNodes = graph.getInteriors();
+            for(InteriorNode node: interiorNodes){
+                node.setPartitionRequired(true);
+            }
+//            Collection<InteriorNode> interiorNodes = graph.getInteriors();
+            boolean change = true;
+            while(change){
+                change = false;
+                for(InteriorNode node: interiorNodes){
+                    if(t1.isConditionCompleted(graph, node)){
+                        t1.transformGraph(graph,node);
+                        change = true;
+                        break;
+                    }
+                    if(t2.isConditionCompleted(graph, node)){
+                        t2.transformGraph(graph,node);
+                        change = true;
+                        break;
+                    }
+                    if(t3.isConditionCompleted(graph, node)){
+                        t3.transformGraph(graph,node);
+                        change = true;
+                        break;
+                    }
+                    if(t4.isConditionCompleted(graph, node)){
+                        t4.transformGraph(graph,node);
+                        change = true;
+                        break;
+                    }
+                    if(t5.isConditionCompleted(graph, node)){
+                        t5.transformGraph(graph,node);
+                        change = true;
+                        break;
+                    }
+                    if(t6.isConditionCompleted(graph, node)){
+                        t6.transformGraph(graph,node);
+                        change = true;
+                        break;
+                    }
+                    if(t7.isConditionCompleted(graph, node)){
+                        t7.transformGraph(graph,node);
                     }
                 }
             }
-
-            System.out.println(" After " + (i+1) + "iter ");
-        }
-
+    }
     }
 
     public static void main(String[] args) {
