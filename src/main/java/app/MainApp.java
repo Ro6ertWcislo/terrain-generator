@@ -62,7 +62,7 @@ public class MainApp {
         return new Pair<>(graph, in1);
     }
 
-    private static Pair<ModelGraph, InteriorNode> task15(){
+    private static Pair<ModelGraph, InteriorNode> task15() {
         ModelGraph graph = new ModelGraph("testGraph");
         Vertex v1 = graph.insertVertex("v1", VertexType.SIMPLE_NODE, new Point3d(0.0, 0.0, 0.0));
         Vertex h2 = graph.insertVertex("h2", VertexType.HANGING_NODE, new Point3d(1.0, 0.0, 0.0));
@@ -138,39 +138,39 @@ public class MainApp {
         Vertex v16 = graph.insertVertex("v16", VertexType.SIMPLE_NODE, new Point3d(200.0, 200.0, 20.0));
         Vertex v17 = graph.insertVertex("v17", VertexType.SIMPLE_NODE, new Point3d(300.0, 200.0, 60.0));
 
-        GraphEdge e01 = graph.insertEdge("e01", v01, v02);
-        GraphEdge e02 = graph.insertEdge("e02", v02, v03);
-        GraphEdge e03 = graph.insertEdge("e03", v03, v04);
-        GraphEdge e04 = graph.insertEdge("e04", v01, v09);
-        GraphEdge e05 = graph.insertEdge("e05", v01, v05);
-        GraphEdge e06 = graph.insertEdge("e06", v05, v09);
-        GraphEdge e07 = graph.insertEdge("e07", v02, v05);
-        GraphEdge e08 = graph.insertEdge("e08", v06, v10);
-        GraphEdge e09 = graph.insertEdge("e09", v02, v06);
-        GraphEdge e10 = graph.insertEdge("e10", v06, v07);
-        GraphEdge e11 = graph.insertEdge("e11", v10, v07);
-        GraphEdge e12 = graph.insertEdge("e12", v03, v07);
-        GraphEdge e13 = graph.insertEdge("e13", v03, v11);
-        GraphEdge e14 = graph.insertEdge("e14", v03, v08);
-        GraphEdge e15 = graph.insertEdge("e15", v08, v12);
-        GraphEdge e16 = graph.insertEdge("e16", v04, v08);
-        GraphEdge e17 = graph.insertEdge("e17", v04, v12);
-        GraphEdge e18 = graph.insertEdge("e18", v09, v10);
-        GraphEdge e19 = graph.insertEdge("e19", v10, v11);
-        GraphEdge e20 = graph.insertEdge("e20", v11, v12);
-        GraphEdge e21 = graph.insertEdge("e21", v09, v15);
-        GraphEdge e22 = graph.insertEdge("e22", v09, v13);
-        GraphEdge e23 = graph.insertEdge("e23", v15, v13);
-        GraphEdge e24 = graph.insertEdge("e24", v13, v10);
-        GraphEdge e25 = graph.insertEdge("e25", v10, v14);
-        GraphEdge e26 = graph.insertEdge("e26", v14, v16);
-        GraphEdge e27 = graph.insertEdge("e27", v14, v11);
-        GraphEdge e28 = graph.insertEdge("e28", v11, v16);
-        GraphEdge e29 = graph.insertEdge("e29", v16, v12);
-        GraphEdge e30 = graph.insertEdge("e30", v12, v17);
-        GraphEdge e31 = graph.insertEdge("e31", v15, v16);
-        GraphEdge e32 = graph.insertEdge("e32", v16, v17);
-        GraphEdge e33 = graph.insertEdge("e33", v02, v07);
+        GraphEdge e01 = graph.insertEdge("v01v02", v01, v02);
+        GraphEdge e02 = graph.insertEdge("v02v03", v02, v03);
+        GraphEdge e03 = graph.insertEdge("v03v04", v03, v04);
+        GraphEdge e04 = graph.insertEdge("v01v09", v01, v09);
+        GraphEdge e05 = graph.insertEdge("v01v05", v01, v05);
+        GraphEdge e06 = graph.insertEdge("v05v09", v05, v09);
+        GraphEdge e07 = graph.insertEdge("v02v05", v02, v05);
+        GraphEdge e08 = graph.insertEdge("v06v10", v06, v10);
+        GraphEdge e09 = graph.insertEdge("v02v06", v02, v06);
+        GraphEdge e10 = graph.insertEdge("v06v07", v06, v07);
+        GraphEdge e11 = graph.insertEdge("v10v07", v10, v07);
+        GraphEdge e12 = graph.insertEdge("v03v07", v03, v07);
+        GraphEdge e13 = graph.insertEdge("v03v11", v03, v11);
+        GraphEdge e14 = graph.insertEdge("v03v08", v03, v08);
+        GraphEdge e15 = graph.insertEdge("v08v12", v08, v12);
+        GraphEdge e16 = graph.insertEdge("v04v08", v04, v08);
+        GraphEdge e17 = graph.insertEdge("v04v12", v04, v12);
+        GraphEdge e18 = graph.insertEdge("v09v10", v09, v10);
+        GraphEdge e19 = graph.insertEdge("v10v11", v10, v11);
+        GraphEdge e20 = graph.insertEdge("v11v12", v11, v12);
+        GraphEdge e21 = graph.insertEdge("v09v15", v09, v15);
+        GraphEdge e22 = graph.insertEdge("v09v13", v09, v13);
+        GraphEdge e23 = graph.insertEdge("v15v13", v15, v13);
+        GraphEdge e24 = graph.insertEdge("v13v10", v13, v10);
+        GraphEdge e25 = graph.insertEdge("v10v14", v10, v14);
+        GraphEdge e26 = graph.insertEdge("v14v16", v14, v16);
+        GraphEdge e27 = graph.insertEdge("v14v11", v14, v11);
+        GraphEdge e28 = graph.insertEdge("v11v16", v11, v16);
+        GraphEdge e29 = graph.insertEdge("v16v12", v16, v12);
+        GraphEdge e30 = graph.insertEdge("v12v17", v12, v17);
+        GraphEdge e31 = graph.insertEdge("v15v16", v15, v16);
+        GraphEdge e32 = graph.insertEdge("v16v17", v16, v17);
+        GraphEdge e33 = graph.insertEdge("v02v07", v02, v07);
 
         graph.insertInterior("i01", v01, v05, v09);
         graph.insertInterior("i02", v01, v02, v05);
@@ -189,31 +189,35 @@ public class MainApp {
         graph.insertInterior("i15", v14, v11, v16);
         graph.insertInterior("i16", v11, v12, v16);
         graph.insertInterior("i17", v16, v12, v17);
-        return null;
+        return graph;
     }
 
     private static void foo() {
         BasicConfigurator.configure();
         List<Transformation> transformations = Arrays.asList(new TransformationP1(), new TransformationP2(), new TransformationP3(),
-                                                             new TransformationP4(), new TransformationP5(), new TransformationP6());
+                new TransformationP4(), new TransformationP5(), new TransformationP6(), new TransformationP7());
+
         Transformation T7 = new TransformationP7();
         ModelGraph graph = fooGraph();
-        List<InteriorNode> ints = new ArrayList<>(graph.getInteriors());
+        List<InteriorNode> ints = new ArrayList<>();
 
-        final int iters = 10;
-        for(int i = 0; i < iters; i++) {
-            for(InteriorNode interior : ints) {
+        final int iters = 7;
+        graph.display();
 
-            }
-            for(Transformation tr : transformations) {
-                for(InteriorNode interior : ints) {
-                    if(tr.isConditionCompleted(graph, interior)) {
-                        tr.transformGraph(graph, interior);
+        for (int i = 0; i < iters; i++) {
+
+            for (Transformation tr : transformations) {
+                List<InteriorNode> interiors = new ArrayList<>(graph.getInteriors());
+                for (int k = 0; k < interiors.size(); k++) {
+                    if (tr.isConditionCompleted(graph, interiors.get(k))) {
+                        graph = tr.transformGraph(graph, interiors.get(k));
                     }
                 }
-
             }
+
+            System.out.println(" After " + (i+1) + "iter ");
         }
+
     }
 
     public static void main(String[] args) {

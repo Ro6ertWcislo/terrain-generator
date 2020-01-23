@@ -4,6 +4,7 @@ import model.GraphNode;
 import model.InteriorNode;
 import model.ModelGraph;
 import model.Vertex;
+import org.javatuples.Triplet;
 
 import java.util.Collections;
 import java.util.List;
@@ -15,11 +16,12 @@ public class TransformationP7 implements Transformation {
 
     @Override
     public boolean isConditionCompleted(ModelGraph graph, InteriorNode interiorNode) {
-        List<Vertex> vertices = interiorNode.getAssociatedNodes();
-        List<Double> zs = vertices.stream().map(GraphNode::getZCoordinate).collect(Collectors.toList());
+        Triplet<Vertex, Vertex, Vertex> vertices = interiorNode.getTriangleVertexes();
+        List<Double> zs = vertices.toList().stream().map(x -> (Vertex) x).map(GraphNode::getZCoordinate).collect(Collectors.toList());
         Double maxZ = Collections.max(zs);
         Double minZ = Collections.min(zs);
         return maxZ - minZ > eps;
+
     }
 
     @Override

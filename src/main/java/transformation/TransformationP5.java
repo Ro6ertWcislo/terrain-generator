@@ -11,6 +11,9 @@ public class TransformationP5 implements Transformation {
     @Override
     public boolean isConditionCompleted(ModelGraph graph, InteriorNode interiorNode) {
         Triplet<Vertex, Vertex, Vertex> triangle = getOrderedTriage(interiorNode.getTriangleVertexes(), graph);
+        if(triangle==null)
+            return false;
+
         Triplet<Vertex, Vertex, Vertex> triangle2 = getOrderedTriage2(triangle, graph);
 
         return areAllVertexType(triangle2) &&
@@ -107,7 +110,7 @@ public class TransformationP5 implements Transformation {
         } else if (getHangingVertexBetweenOp(v.getValue1(), v.getValue2(), graph).isPresent()) {
             return new Triplet<>(v.getValue1(), v.getValue2(), v.getValue0());
         }
-        throw new RuntimeException("Configuration with hanging vertex between 2 vertexes was not found");
+        return null;
     }
 
     private Optional<Vertex> getHangingVertexBetweenOp(Vertex v1, Vertex v2, ModelGraph graph) {
